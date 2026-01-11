@@ -1,0 +1,8 @@
+{
+  "name": "ALPHA - AI Signal Engine",
+  "description": "ALPHA is a continuous world scanner that crawls Twitter, Web3 communities, and news to deliver high-quality, AI-refined signals instead of noise.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
