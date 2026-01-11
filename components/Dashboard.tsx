@@ -18,7 +18,8 @@ const Dashboard: React.FC<DashboardProps> = ({ signals, onNavigate, monitoredSou
 
   useEffect(() => {
     const timer = setInterval(() => {
-      const diff = scheduleManager.getNextScanTime() - Date.now();
+      const nextTime = scheduleManager.getNextScanTime();
+      const diff = nextTime - Date.now();
       const h = Math.floor(diff / 3600000);
       const m = Math.floor((diff % 3600000) / 60000);
       const s = Math.floor((diff % 60000) / 1000);
@@ -31,101 +32,105 @@ const Dashboard: React.FC<DashboardProps> = ({ signals, onNavigate, monitoredSou
     <div className="space-y-8 max-w-6xl mx-auto animate-in fade-in duration-700">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight mb-2">系统控制台 <span className="text-primary/40 font-light">/ Dashboard</span></h1>
-          <div className="h-px w-32 bg-primary"></div>
+          <h1 className="text-4xl font-black tracking-tight mb-2">情报中心 <span className="text-primary/40 font-light">/ Command Center</span></h1>
+          <p className="text-white/30 text-xs uppercase tracking-widest font-mono">Real-time AI/Web3 Community Penetration</p>
         </div>
-        <div className="bg-white/5 border border-white/10 rounded-2xl px-6 py-3 flex items-center gap-6">
+        <div className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4 flex items-center gap-8">
            <div className="flex flex-col">
-              <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">距离下次全网扫描</span>
-              <span className="text-lg font-mono text-primary font-bold">{timeLeft}</span>
+              <span className="text-[10px] text-white/40 uppercase font-black tracking-widest">距离下一波推送</span>
+              <span className="text-2xl font-mono text-primary font-black drop-shadow-[0_0_8px_rgba(0,240,240,0.5)]">{timeLeft}</span>
            </div>
-           <div className="w-px h-8 bg-white/10"></div>
+           <div className="w-px h-10 bg-white/10"></div>
            <div className="flex flex-col">
-              <span className="text-[10px] text-white/40 uppercase font-bold tracking-widest">下个简报推送</span>
-              <span className="text-lg font-mono text-white/80 font-bold">09:00 AM</span>
+              <span className="text-[10px] text-white/40 uppercase font-black tracking-widest">固定调度时间</span>
+              <div className="flex gap-2 mt-1">
+                 {scheduleManager.getScheduleLabels().map(label => (
+                   <span key={label} className="text-[10px] bg-white/10 px-2 py-0.5 rounded font-mono text-white/60">{label}</span>
+                 ))}
+              </div>
            </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Signal Card */}
-        <div className="bg-accent/40 backdrop-blur-xl border border-white/5 rounded-[2rem] p-8 lg:p-10 flex flex-col group hover:border-primary/30 transition-all cursor-pointer relative overflow-hidden h-auto min-h-[420px]" onClick={() => onNavigate('signal')}>
+        <div className="bg-accent/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-10 flex flex-col group hover:border-primary/30 transition-all cursor-pointer relative overflow-hidden h-auto min-h-[450px]" onClick={() => onNavigate('signal')}>
           <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-             <span className="material-symbols-outlined text-[160px]">sensors</span>
+             <span className="material-symbols-outlined text-[180px]">hub</span>
           </div>
           
           <div className="relative z-10 flex-1">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="px-3 py-1 bg-primary/10 border border-primary/30 rounded text-primary text-[10px] font-bold tracking-wider uppercase">Deep Tech Scanner</span>
-              <span className="text-white/20 text-[10px] font-mono">DevTools & Productivity</span>
+            <div className="flex items-center gap-3 mb-8">
+              <span className="px-3 py-1 bg-primary text-secondary rounded text-[10px] font-black tracking-wider uppercase">DEEP SCAN ACTIVE</span>
+              <span className="text-white/20 text-[10px] font-mono tracking-widest">X-THREADS / REDDIT / GITHUB</span>
             </div>
-            <h2 className="text-3xl font-black mb-4 tracking-tighter">信息信号 <span className="text-white/30 font-light ml-2">Signal</span></h2>
+            <h2 className="text-4xl font-black mb-6 tracking-tighter">聚合信号 <span className="text-white/20 font-light block text-lg tracking-normal mt-1">AI Productivity & Innovation</span></h2>
             
-            <div className="flex gap-12 mt-10 mb-8">
-               <div>
-                  <p className="text-white/40 text-[10px] uppercase tracking-widest mb-1">今日实时捕获</p>
-                  <p className="text-5xl font-black text-primary neon-text">{signalCount.toString().padStart(2, '0')}</p>
+            <div className="flex gap-16 mb-10">
+               <div className="flex flex-col">
+                  <span className="text-white/40 text-[10px] uppercase tracking-widest mb-2">已提炼情报</span>
+                  <span className="text-6xl font-black text-primary neon-text leading-none">{signalCount}</span>
                </div>
-               <div className="w-px h-16 bg-white/5"></div>
-               <div>
-                  <p className="text-white/40 text-[10px] uppercase tracking-widest mb-1">关注来源</p>
-                  <p className="text-5xl font-black text-white">{(monitoredSources?.twitters.length || 0) + (monitoredSources?.websites.length || 0)}</p>
+               <div className="flex flex-col">
+                  <span className="text-white/40 text-[10px] uppercase tracking-widest mb-2">活跃节点</span>
+                  <span className="text-6xl font-black text-white leading-none">{(monitoredSources?.twitters.length || 0)}</span>
                </div>
             </div>
 
-            {/* Source Display Area */}
-            <div className="bg-black/20 rounded-2xl p-4 border border-white/5 space-y-3">
-               <p className="text-[9px] text-white/40 uppercase font-black tracking-widest border-b border-white/5 pb-2">当前监控名单 / Target List</p>
-               <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto pr-2">
-                  {monitoredSources?.twitters.map(t => (
-                    <span key={t} className="text-[10px] bg-primary/5 text-primary/60 px-2 py-0.5 rounded border border-primary/10">@{t}</span>
-                  ))}
-                  {monitoredSources?.websites.map(w => (
-                    <span key={w} className="text-[10px] bg-white/5 text-white/40 px-2 py-0.5 rounded border border-white/10">{w}</span>
+            <div className="bg-black/40 rounded-3xl p-5 border border-white/5 space-y-4">
+               <div className="flex justify-between items-center">
+                  <p className="text-[10px] text-primary/60 uppercase font-black tracking-widest">当前扫描偏好</p>
+                  <span className="text-[9px] text-white/20 uppercase font-mono tracking-tighter">Dynamic adaptation on</span>
+               </div>
+               <div className="flex flex-wrap gap-2">
+                  {monitoredSources?.twitters.slice(0, 5).map(t => (
+                    <span key={t} className="text-[10px] bg-white/5 text-white/50 px-3 py-1 rounded-full border border-white/10 hover:border-primary/40 transition-colors">@{t}</span>
                   ))}
                </div>
             </div>
           </div>
 
-          <div className="relative z-10 flex items-center justify-between mt-8">
-            <p className="text-white/30 text-xs max-w-[240px]">Gemini 3 Pro 已聚焦于开发者工具更新、开源项目动态及生产力工具进化。</p>
-            <button className="size-12 bg-primary text-secondary rounded-2xl flex items-center justify-center neon-glow group-hover:scale-110 transition-all">
+          <div className="relative z-10 flex items-center justify-between mt-10">
+            <p className="text-white/30 text-xs leading-relaxed max-w-[280px]">
+               基于您的反馈，引擎当前优先检索【真实生产力工具实践】与【早期 Web3 异动】。
+            </p>
+            <div className="size-14 bg-primary text-secondary rounded-2xl flex items-center justify-center neon-glow group-hover:rotate-45 transition-all">
                 {ICONS.ARROW_FORWARD}
-            </button>
+            </div>
           </div>
         </div>
 
         {/* Finance Card */}
-        <div className="bg-accent/40 backdrop-blur-xl border border-white/5 rounded-[2rem] p-8 lg:p-10 flex flex-col group hover:border-risk-medium/30 transition-all cursor-pointer relative overflow-hidden h-auto min-h-[420px]" onClick={() => onNavigate('finance')}>
+        <div className="bg-accent/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-10 flex flex-col group hover:border-risk-medium/30 transition-all cursor-pointer relative overflow-hidden h-auto min-h-[450px]" onClick={() => onNavigate('finance')}>
           <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-             <span className="material-symbols-outlined text-[160px]">account_balance_wallet</span>
+             <span className="material-symbols-outlined text-[180px]">monitoring</span>
           </div>
           
           <div className="relative z-10 flex-1">
-            <div className="flex items-center gap-3 mb-6">
-              <span className="px-3 py-1 bg-orange-500/10 border border-orange-500/30 rounded text-orange-500 text-[10px] font-bold tracking-wider uppercase">Asset Sentinel</span>
-              <span className="text-white/20 text-[10px] font-mono">Web3 & Finance Intelligence</span>
+            <div className="flex items-center gap-3 mb-8">
+              <span className="px-3 py-1 bg-orange-500/20 border border-orange-500/40 rounded text-orange-500 text-[10px] font-black tracking-wider uppercase">Alpha Hunter</span>
             </div>
-            <h2 className="text-3xl font-black mb-4 tracking-tighter">理财信号 <span className="text-white/30 font-light ml-2">Finance</span></h2>
+            <h2 className="text-4xl font-black mb-6 tracking-tighter">理财预警 <span className="text-white/20 font-light block text-lg tracking-normal mt-1">Web3 & Asset Security</span></h2>
             
-            <div className="flex gap-12 mt-10">
-               <div>
-                  <p className="text-white/40 text-[10px] uppercase tracking-widest mb-1">高危预警</p>
-                  <p className="text-5xl font-black text-orange-500">{highRiskCount.toString().padStart(2, '0')}</p>
+            <div className="flex gap-16">
+               <div className="flex flex-col">
+                  <span className="text-white/40 text-[10px] uppercase tracking-widest mb-2">高危情报</span>
+                  <span className="text-6xl font-black text-orange-500 leading-none">{highRiskCount}</span>
                </div>
-               <div className="w-px h-16 bg-white/5"></div>
-               <div>
-                  <p className="text-white/40 text-[10px] uppercase tracking-widest mb-1">监控资产</p>
-                  <p className="text-5xl font-black text-white">{financeCount.toString().padStart(2, '0')}</p>
+               <div className="flex flex-col">
+                  <span className="text-white/40 text-[10px] uppercase tracking-widest mb-2">监控广度</span>
+                  <span className="text-6xl font-black text-white leading-none">{financeCount}</span>
                </div>
             </div>
           </div>
 
-          <div className="relative z-10 flex items-center justify-between mt-8">
-            <p className="text-white/30 text-xs max-w-[240px]">同样的逻辑，用在钱上。侧重于 Web3 投融资动态、代币技术性升级及链上风险。</p>
-            <button className="size-12 bg-white/5 border border-white/10 text-white rounded-2xl flex items-center justify-center group-hover:bg-white group-hover:text-secondary transition-all">
+          <div className="relative z-10 flex items-center justify-between mt-10">
+            <p className="text-white/30 text-xs leading-relaxed max-w-[280px]">
+               同样的逻辑用在资产。侧重早期投融资、技术升级诱发的泵感，以及潜在的安全风险穿透。
+            </p>
+            <div className="size-14 bg-white/5 border border-white/10 text-white rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all">
                 {ICONS.ARROW_FORWARD}
-            </button>
+            </div>
           </div>
         </div>
       </div>

@@ -28,6 +28,9 @@ export interface Signal {
   fullContent: string; // 详情内容
   originalUrl: string; // 原始主链接
   references?: string[]; // 参考资料列表
+  liked?: boolean;      // 用户点赞，用于反馈系统
+  disliked?: boolean;   // 用户踩，用于过滤
+  communitySentiment?: string; // 社区讨论热度与情绪摘要
 }
 
 export interface AppState {
