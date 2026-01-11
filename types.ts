@@ -1,9 +1,11 @@
 
 export enum SignalType {
-  AI = 'AI',
-  WEB3 = 'WEB3',
-  FINANCE = 'FINANCE',
-  INFRA = 'INFRA'
+  AI_PROD = 'AI_PROD',      // AI 生产力工具与应用
+  AI_MODELS = 'AI_MODELS',  // 大模型、研究与架构
+  AI_DEV = 'AI_DEV',        // 开发者工具与开源项目
+  WEB3_AI = 'WEB3_AI',      // Web3 与 AI 融合
+  FINANCE = 'FINANCE',      // 金融与市场信号
+  INFRA = 'INFRA'           // 基础设施与算力
 }
 
 export enum RiskLevel {
