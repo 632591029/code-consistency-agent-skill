@@ -7,10 +7,10 @@ export const geminiService = {
     try {
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       
-      let systemInstruction = "You are ALPHA, an advanced AI Signal Engine Assistant specialized in AI, Web3, and Finance. You help users understand signals with clarity, focusing on 'Why this matters' and 'What to do'. Be professional, concise, and futuristic.";
+      let systemInstruction = "你是 ALPHA，一个专注于 AI、Web3 和金融的高级情报分析助手。你负责帮助用户清晰地理解复杂信号，重点回答“为什么这很重要”以及“应该怎么做”。请保持专业、简洁、且具有前瞻性的语气。请使用中文回答。";
       
       if (contextSignal) {
-        systemInstruction += `\n\nCONTEXT SIGNAL:\nTitle: ${contextSignal.title}\nMeaning: ${contextSignal.meaning}\nSummary: ${contextSignal.summary}\nRisk: ${contextSignal.risk}`;
+        systemInstruction += `\n\n上下文情报：\n标题: ${contextSignal.title}\n战略意义: ${contextSignal.meaning}\n摘要: ${contextSignal.summary}\n风险等级: ${contextSignal.risk}`;
       }
 
       const response = await ai.models.generateContent({

@@ -1,8 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Signal, SignalType } from '../types';
-import { ICONS } from '../constants';
-import { scheduleManager } from '../services/emailService';
 
 interface DashboardProps {
   signals: Signal[];
@@ -11,128 +9,79 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ signals, onNavigate, monitoredSources }) => {
-  const [timeLeft, setTimeLeft] = useState("");
-  const signalCount = signals.filter(s => s.type !== SignalType.FINANCE).length;
-  const financeCount = signals.filter(s => s.type === SignalType.FINANCE).length;
   const highRiskCount = signals.filter(s => s.risk === 'HIGH').length;
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      const nextTime = scheduleManager.getNextScanTime();
-      const diff = nextTime - Date.now();
-      const h = Math.floor(diff / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      setTimeLeft(`${h}h ${m}m ${s}s`);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
-
   return (
-    <div className="space-y-8 max-w-6xl mx-auto animate-in fade-in duration-700">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-4xl font-black tracking-tight mb-2">情报中心 <span className="text-primary/40 font-light">/ Command Center</span></h1>
-          <p className="text-white/30 text-xs uppercase tracking-widest font-mono">Real-time AI/Web3 Community Penetration</p>
-        </div>
-        <div className="bg-white/5 border border-white/10 rounded-2xl px-6 py-4 flex items-center gap-8">
-           <div className="flex flex-col">
-              <span className="text-[10px] text-white/40 uppercase font-black tracking-widest">距离下一波推送</span>
-              <span className="text-2xl font-mono text-primary font-black drop-shadow-[0_0_8px_rgba(0,240,240,0.5)]">{timeLeft}</span>
-           </div>
-           <div className="w-px h-10 bg-white/10"></div>
-           <div className="flex flex-col">
-              <span className="text-[10px] text-white/40 uppercase font-black tracking-widest">固定调度时间</span>
-              <div className="flex gap-2 mt-1">
-                 {scheduleManager.getScheduleLabels().map(label => (
-                   <span key={label} className="text-[10px] bg-white/10 px-2 py-0.5 rounded font-mono text-white/60">{label}</span>
-                 ))}
+    <div className="space-y-8 max-w-7xl mx-auto px-2 lg:px-0 animate-in fade-in duration-500">
+      {/* 顶部统计 */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { label: '捕捉信号总数', val: signals.length, icon: 'radar', color: 'text-primary' },
+          { label: '活跃监控节点', val: (monitoredSources?.twitters.length || 0), icon: 'sensors', color: 'text-slate-400' },
+          { label: '高危预警', val: highRiskCount, icon: 'warning', color: 'text-red-500' },
+          { label: '引擎状态', val: '待命', icon: 'bolt', color: 'text-primary' }
+        ].map((stat, i) => (
+          <div key={i} className="glass p-5 rounded-2xl flex flex-col justify-between h-32 relative overflow-hidden group">
+            <span className={`material-symbols-outlined absolute -right-2 -bottom-2 text-7xl opacity-5 ${stat.color}`}>{stat.icon}</span>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{stat.label}</span>
+            <span className={`text-3xl font-black ${stat.color}`}>{stat.val}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* 情报入口 */}
+        <div 
+          onClick={() => onNavigate('signal')}
+          className="lg:col-span-2 group relative p-10 rounded-3xl overflow-hidden cursor-pointer transition-all border border-slate-800 hover:border-primary/30 bg-slate-900/50"
+        >
+          <div className="relative z-10 flex flex-col h-full">
+            <div className="flex items-center gap-2 mb-8">
+              <div className="h-[2px] w-8 bg-primary/40"></div>
+              <span className="text-[10px] font-mono text-primary font-bold uppercase tracking-widest">DEEP SCAN ACTIVE</span>
+            </div>
+            <h2 className="text-5xl font-black mb-4 tracking-tighter leading-[1.1] text-white">
+              实时社区<br/><span className="text-primary italic">深度情报</span>
+            </h2>
+            <p className="text-slate-400 max-w-md text-sm leading-relaxed mb-12">
+              ALPHA 正在穿透 X 和开发者社区，为您提取具备【真实落地价值】的硬核实践案例，而非无用的新闻。
+            </p>
+            <div className="mt-auto flex items-center justify-end">
+              <div className="flex items-center gap-4 group-hover:gap-6 transition-all">
+                <span className="text-xs font-black uppercase tracking-widest text-primary">进入终端</span>
+                <span className="material-symbols-outlined text-primary text-2xl">arrow_right_alt</span>
               </div>
-           </div>
+            </div>
+          </div>
+        </div>
+
+        {/* 财富入口 */}
+        <div 
+          onClick={() => onNavigate('finance')}
+          className="group relative p-10 rounded-3xl overflow-hidden cursor-pointer transition-all border border-slate-800 bg-slate-900/30 hover:bg-slate-800/50"
+        >
+          <div className="flex flex-col h-full relative z-10">
+            <div className="size-14 bg-amber-500/10 rounded-2xl flex items-center justify-center border border-amber-500/20 mb-10">
+               <span className="material-symbols-outlined text-3xl text-amber-500">monitoring</span>
+            </div>
+            <h3 className="text-3xl font-black tracking-tight mb-4 italic text-white">财富<br/>探测器</h3>
+            <p className="text-slate-500 text-sm leading-relaxed mb-8">
+              资产异动、跨链流向与安全预警。AI 引擎实时对资产安全性进行审查。
+            </p>
+            <div className="mt-auto text-right">
+              <span className="material-symbols-outlined text-slate-700 group-hover:text-amber-500 transition-colors">trending_up</span>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Signal Card */}
-        <div className="bg-accent/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-10 flex flex-col group hover:border-primary/30 transition-all cursor-pointer relative overflow-hidden h-auto min-h-[450px]" onClick={() => onNavigate('signal')}>
-          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-             <span className="material-symbols-outlined text-[180px]">hub</span>
-          </div>
-          
-          <div className="relative z-10 flex-1">
-            <div className="flex items-center gap-3 mb-8">
-              <span className="px-3 py-1 bg-primary text-secondary rounded text-[10px] font-black tracking-wider uppercase">DEEP SCAN ACTIVE</span>
-              <span className="text-white/20 text-[10px] font-mono tracking-widest">X-THREADS / REDDIT / GITHUB</span>
-            </div>
-            <h2 className="text-4xl font-black mb-6 tracking-tighter">聚合信号 <span className="text-white/20 font-light block text-lg tracking-normal mt-1">AI Productivity & Innovation</span></h2>
-            
-            <div className="flex gap-16 mb-10">
-               <div className="flex flex-col">
-                  <span className="text-white/40 text-[10px] uppercase tracking-widest mb-2">已提炼情报</span>
-                  <span className="text-6xl font-black text-primary neon-text leading-none">{signalCount}</span>
-               </div>
-               <div className="flex flex-col">
-                  <span className="text-white/40 text-[10px] uppercase tracking-widest mb-2">活跃节点</span>
-                  <span className="text-6xl font-black text-white leading-none">{(monitoredSources?.twitters.length || 0)}</span>
-               </div>
-            </div>
-
-            <div className="bg-black/40 rounded-3xl p-5 border border-white/5 space-y-4">
-               <div className="flex justify-between items-center">
-                  <p className="text-[10px] text-primary/60 uppercase font-black tracking-widest">当前扫描偏好</p>
-                  <span className="text-[9px] text-white/20 uppercase font-mono tracking-tighter">Dynamic adaptation on</span>
-               </div>
-               <div className="flex flex-wrap gap-2">
-                  {monitoredSources?.twitters.slice(0, 5).map(t => (
-                    <span key={t} className="text-[10px] bg-white/5 text-white/50 px-3 py-1 rounded-full border border-white/10 hover:border-primary/40 transition-colors">@{t}</span>
-                  ))}
-               </div>
-            </div>
-          </div>
-
-          <div className="relative z-10 flex items-center justify-between mt-10">
-            <p className="text-white/30 text-xs leading-relaxed max-w-[280px]">
-               基于您的反馈，引擎当前优先检索【真实生产力工具实践】与【早期 Web3 异动】。
-            </p>
-            <div className="size-14 bg-primary text-secondary rounded-2xl flex items-center justify-center neon-glow group-hover:rotate-45 transition-all">
-                {ICONS.ARROW_FORWARD}
-            </div>
-          </div>
+      {/* 提示信息 */}
+      <div className="glass rounded-2xl p-6 flex items-center justify-between border-slate-800/50">
+        <div className="flex items-center gap-4">
+          <div className="size-2 rounded-full bg-primary animate-pulse"></div>
+          <p className="text-xs font-medium text-slate-400">系统提示：<span className="text-slate-200">引擎目前已通过 Gemini 加固，确保信号去噪率 > 99%</span></p>
         </div>
-
-        {/* Finance Card */}
-        <div className="bg-accent/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem] p-10 flex flex-col group hover:border-risk-medium/30 transition-all cursor-pointer relative overflow-hidden h-auto min-h-[450px]" onClick={() => onNavigate('finance')}>
-          <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-             <span className="material-symbols-outlined text-[180px]">monitoring</span>
-          </div>
-          
-          <div className="relative z-10 flex-1">
-            <div className="flex items-center gap-3 mb-8">
-              <span className="px-3 py-1 bg-orange-500/20 border border-orange-500/40 rounded text-orange-500 text-[10px] font-black tracking-wider uppercase">Alpha Hunter</span>
-            </div>
-            <h2 className="text-4xl font-black mb-6 tracking-tighter">理财预警 <span className="text-white/20 font-light block text-lg tracking-normal mt-1">Web3 & Asset Security</span></h2>
-            
-            <div className="flex gap-16">
-               <div className="flex flex-col">
-                  <span className="text-white/40 text-[10px] uppercase tracking-widest mb-2">高危情报</span>
-                  <span className="text-6xl font-black text-orange-500 leading-none">{highRiskCount}</span>
-               </div>
-               <div className="flex flex-col">
-                  <span className="text-white/40 text-[10px] uppercase tracking-widest mb-2">监控广度</span>
-                  <span className="text-6xl font-black text-white leading-none">{financeCount}</span>
-               </div>
-            </div>
-          </div>
-
-          <div className="relative z-10 flex items-center justify-between mt-10">
-            <p className="text-white/30 text-xs leading-relaxed max-w-[280px]">
-               同样的逻辑用在资产。侧重早期投融资、技术升级诱发的泵感，以及潜在的安全风险穿透。
-            </p>
-            <div className="size-14 bg-white/5 border border-white/10 text-white rounded-2xl flex items-center justify-center group-hover:scale-110 transition-all">
-                {ICONS.ARROW_FORWARD}
-            </div>
-          </div>
-        </div>
+        <button onClick={() => onNavigate('settings')} className="text-[10px] font-bold uppercase tracking-widest text-slate-500 hover:text-slate-300">配置监控节点</button>
       </div>
     </div>
   );
