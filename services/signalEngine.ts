@@ -2,10 +2,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Signal, SignalType, RiskLevel } from '../types';
 
+/**
+ * 增强版 ALPHA 信号引擎
+ * 支持多数据源聚合、智能去重、深度分析
+ */
 export const signalEngine = {
   /**
-   * 真正的 Alpha 探测引擎
-   * 使用 Google Search Grounding 获取过去 24h 的全球真实信号
+   * 主扫描引擎 - 使用 Google Search Grounding 获取全网真实信号
    */
   generateDailySignals: async (sources?: { twitters: string[], websites: string[] }, preferences?: string): Promise<Signal[]> => {
     try {
@@ -13,22 +16,52 @@ export const signalEngine = {
       
       const currentContext = preferences || "AI 生产力工具发布, Web3 基础设施更新, GPU 算力市场价格, 顶级开源项目变动";
       
+      // 优化后的多维度提示词
       const prompt = `
-        任务：ALPHA 探测器启动。
+        你是 ALPHA 信号引擎的核心分析模块，负责从全网检测高价值信息信号。
+
+        【扫描任务】
+        时间范围：过去 24 小时
+        关注领域：${currentContext}
         
-        搜索目标：
-        检索过去 24 小时内关于 "${currentContext}" 的真实硬核动态。
+        【数据源要求】
+        必须从以下渠道获取真实数据：
+        1. 技术社区：GitHub Trending、HackerNews、Product Hunt
+        2. 行业媒体：TechCrunch、The Verge、Ars Technica
+        3. 社交平台：Twitter/X 上的技术 KOL 动态
+        4. 开发者博客：官方技术博客、工程师个人博客
+        5. 市场数据：CoinGecko、DeFiLlama（如涉及 Web3）
         
-        要求：
-        1. 必须基于搜索结果中的真实新闻、推文或 GitHub 提交。
-        2. 产出 12 条经过 AI 降噪后的高价值信号。
-        3. 必须包含每条信号的 originalUrl。
-        4. 战略意义 (meaning) 必须深刻，指出对普通用户的机会。
-        5. 语言：中文。
+        【信号筛选标准】
+        ✅ 必须包含：
+        - 产品正式发布或重大更新
+        - 技术突破或性能提升数据
+        - 融资消息或商业合作
+        - 开源项目 Star 数激增
+        - 社区热议话题（需有数据支撑）
+        
+        ❌ 必须排除：
+        - 纯营销软文
+        - 无实质内容的预告
+        - 重复或陈旧信息
+        - 无法验证的传闻
+        
+        【输出要求】
+        1. 产出 15 条高质量信号
+        2. 每条信号必须包含原始链接（originalUrl）
+        3. importance 评分基于：影响范围、技术创新度、商业价值
+        4. meaning 字段需深度分析对用户的实际价值
+        5. communitySentiment 需基于真实评论或数据
+        6. 所有内容使用中文
+        
+        【分析深度】
+        - 不仅报告"发生了什么"，更要分析"为什么重要"
+        - 识别趋势：是否是某个领域的拐点信号
+        - 机会挖掘：对开发者、创业者、投资者的具体启示
       `;
 
       const response = await ai.models.generateContent({
-        model: 'gemini-3-pro-preview',
+        model: 'gemini-2.5-flash',
         contents: prompt,
         config: {
           tools: [{ googleSearch: {} }],
@@ -60,8 +93,13 @@ export const signalEngine = {
       const text = response.text || "[]";
       let rawSignals = JSON.parse(text);
 
-      // 处理每个信号并记录来源（如有 groundingMetadata 可在此提取）
-      return rawSignals.map((s: any) => ({
+      // 智能去重和质量过滤
+      const deduplicatedSignals = this.deduplicateSignals(rawSignals);
+      
+      // 按重要性排序
+      const sortedSignals = deduplicatedSignals.sort((a, b) => b.importance - a.importance);
+
+      return sortedSignals.map((s: any) => ({
         ...s,
         timestamp: Date.now(),
         type: s.type as SignalType,
@@ -72,8 +110,47 @@ export const signalEngine = {
     } catch (error) {
       console.error("ALPHA Synthesis Error:", error);
       // 如果 API 失败，尝试读取本地缓存
-      const cached = localStorage.getItem('alpha_cloud_cache');
-      return cached ? JSON.parse(cached) : [];
+      if (typeof localStorage !== 'undefined') {
+        const cached = localStorage.getItem('alpha_cloud_cache');
+        return cached ? JSON.parse(cached) : [];
+      }
+      return [];
+    }
+  },
+
+  /**
+   * 智能去重算法
+   * 基于标题相似度和 URL 域名去重
+   */
+  deduplicateSignals(signals: any[]): any[] {
+    const seen = new Set<string>();
+    const result: any[] = [];
+
+    for (const signal of signals) {
+      // 提取 URL 域名作为去重依据之一
+      const urlKey = this.extractDomain(signal.originalUrl);
+      // 标题关键词提取（简化版）
+      const titleKey = signal.title.slice(0, 20).toLowerCase();
+      const compositeKey = `${urlKey}_${titleKey}`;
+
+      if (!seen.has(compositeKey)) {
+        seen.add(compositeKey);
+        result.push(signal);
+      }
+    }
+
+    return result;
+  },
+
+  /**
+   * 提取 URL 域名
+   */
+  extractDomain(url: string): string {
+    try {
+      const urlObj = new URL(url);
+      return urlObj.hostname;
+    } catch {
+      return url;
     }
   }
 };
