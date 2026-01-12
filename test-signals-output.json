@@ -1,0 +1,367 @@
+[
+  {
+    "id": "HN-46579864",
+    "title": "The struggle of resizing windows on macOS Tahoe",
+    "type": "TECH_NEWS",
+    "tags": [
+      "HackerNews",
+      "Tech Discussion"
+    ],
+    "importance": 8,
+    "summary": "The struggle of resizing windows on macOS Tahoe",
+    "meaning": "The struggle of resizing windows on macOS Tahoe 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "HackerNews",
+    "fullContent": "The struggle of resizing windows on macOS Tahoe",
+    "originalUrl": "https://noheger.at/blog/2026/01/11/the-struggle-of-resizing-windows-on-macos-tahoe/",
+    "metadata": {
+      "score": 1555,
+      "comments": 626,
+      "author": "happosai",
+      "time": 1768164475
+    },
+    "timestamp": 1768207235071
+  },
+  {
+    "id": "HN-46574276",
+    "title": "Don't fall into the anti-AI hype",
+    "type": "TECH_NEWS",
+    "tags": [
+      "HackerNews",
+      "Tech Discussion"
+    ],
+    "importance": 7,
+    "summary": "Don't fall into the anti-AI hype",
+    "meaning": "Don't fall into the anti-AI hype 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "HackerNews",
+    "fullContent": "Don't fall into the anti-AI hype",
+    "originalUrl": "https://antirez.com/news/158",
+    "metadata": {
+      "score": 929,
+      "comments": 1106,
+      "author": "todsacerdoti",
+      "time": 1768127178
+    },
+    "timestamp": 1768207235071
+  },
+  {
+    "id": "CRYPTO-monero",
+    "title": "Monero (XMR): Trending on CoinGecko",
+    "type": "WEB3_AI",
+    "tags": [
+      "Crypto",
+      "Web3",
+      "Trending",
+      "XMR"
+    ],
+    "importance": 7,
+    "summary": "Monero 正在 CoinGecko 上趋势上升，市值排名 #18",
+    "meaning": "Monero 正在 CoinGecko 上趋势上升，市值排名 #18 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "CoinGecko",
+    "fullContent": "Monero 正在 CoinGecko 上趋势上升，市值排名 #18",
+    "originalUrl": "https://www.coingecko.com/en/coins/monero",
+    "metadata": {
+      "symbol": "XMR",
+      "market_cap_rank": 18,
+      "thumb": "https://coin-images.coingecko.com/coins/images/69/standard/monero_logo.png?1696501460"
+    },
+    "timestamp": 1768207236171
+  },
+  {
+    "id": "CRYPTO-zcash",
+    "title": "Zcash (ZEC): Trending on CoinGecko",
+    "type": "WEB3_AI",
+    "tags": [
+      "Crypto",
+      "Web3",
+      "Trending",
+      "ZEC"
+    ],
+    "importance": 7,
+    "summary": "Zcash 正在 CoinGecko 上趋势上升，市值排名 #28",
+    "meaning": "Zcash 正在 CoinGecko 上趋势上升，市值排名 #28 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "CoinGecko",
+    "fullContent": "Zcash 正在 CoinGecko 上趋势上升，市值排名 #28",
+    "originalUrl": "https://www.coingecko.com/en/coins/zcash",
+    "metadata": {
+      "symbol": "ZEC",
+      "market_cap_rank": 28,
+      "thumb": "https://coin-images.coingecko.com/coins/images/486/standard/circle-zcash-color.png?1696501740"
+    },
+    "timestamp": 1768207236171
+  },
+  {
+    "id": "CRYPTO-quai-network",
+    "title": "Quai Network (QUAI): Trending on CoinGecko",
+    "type": "WEB3_AI",
+    "tags": [
+      "Crypto",
+      "Web3",
+      "Trending",
+      "QUAI"
+    ],
+    "importance": 7,
+    "summary": "Quai Network 正在 CoinGecko 上趋势上升，市值排名 #613",
+    "meaning": "Quai Network 正在 CoinGecko 上趋势上升，市值排名 #613 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "CoinGecko",
+    "fullContent": "Quai Network 正在 CoinGecko 上趋势上升，市值排名 #613",
+    "originalUrl": "https://www.coingecko.com/en/coins/quai-network",
+    "metadata": {
+      "symbol": "QUAI",
+      "market_cap_rank": 613,
+      "thumb": "https://coin-images.coingecko.com/coins/images/27928/standard/QuaiLogoFinal.png?1696526947"
+    },
+    "timestamp": 1768207236171
+  },
+  {
+    "id": "CRYPTO-story-2",
+    "title": "Story (IP): Trending on CoinGecko",
+    "type": "WEB3_AI",
+    "tags": [
+      "Crypto",
+      "Web3",
+      "Trending",
+      "IP"
+    ],
+    "importance": 7,
+    "summary": "Story 正在 CoinGecko 上趋势上升，市值排名 #110",
+    "meaning": "Story 正在 CoinGecko 上趋势上升，市值排名 #110 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "CoinGecko",
+    "fullContent": "Story 正在 CoinGecko 上趋势上升，市值排名 #110",
+    "originalUrl": "https://www.coingecko.com/en/coins/story-2",
+    "metadata": {
+      "symbol": "IP",
+      "market_cap_rank": 110,
+      "thumb": "https://coin-images.coingecko.com/coins/images/54035/standard/Transparent_bg.png?1738075331"
+    },
+    "timestamp": 1768207236171
+  },
+  {
+    "id": "CRYPTO-bitcoin",
+    "title": "Bitcoin (BTC): Trending on CoinGecko",
+    "type": "WEB3_AI",
+    "tags": [
+      "Crypto",
+      "Web3",
+      "Trending",
+      "BTC"
+    ],
+    "importance": 7,
+    "summary": "Bitcoin 正在 CoinGecko 上趋势上升，市值排名 #1",
+    "meaning": "Bitcoin 正在 CoinGecko 上趋势上升，市值排名 #1 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "CoinGecko",
+    "fullContent": "Bitcoin 正在 CoinGecko 上趋势上升，市值排名 #1",
+    "originalUrl": "https://www.coingecko.com/en/coins/bitcoin",
+    "metadata": {
+      "symbol": "BTC",
+      "market_cap_rank": 1,
+      "thumb": "https://coin-images.coingecko.com/coins/images/1/standard/bitcoin.png?1696501400"
+    },
+    "timestamp": 1768207236171
+  },
+  {
+    "id": "HN-46580326",
+    "title": "CLI agents make self-hosting on a home server easier and fun",
+    "type": "TECH_NEWS",
+    "tags": [
+      "HackerNews",
+      "Tech Discussion"
+    ],
+    "importance": 7,
+    "summary": "CLI agents make self-hosting on a home server easier and fun",
+    "meaning": "CLI agents make self-hosting on a home server easier and fun 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "HackerNews",
+    "fullContent": "CLI agents make self-hosting on a home server easier and fun",
+    "originalUrl": "https://fulghum.io/self-hosting",
+    "metadata": {
+      "score": 491,
+      "comments": 311,
+      "author": "websku",
+      "time": 1768166997
+    },
+    "timestamp": 1768207235071
+  },
+  {
+    "id": "HN-46578921",
+    "title": "iCloud Photos Downloader",
+    "type": "TECH_NEWS",
+    "tags": [
+      "HackerNews",
+      "Tech Discussion"
+    ],
+    "importance": 7,
+    "summary": "iCloud Photos Downloader",
+    "meaning": "iCloud Photos Downloader 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "HackerNews",
+    "fullContent": "iCloud Photos Downloader",
+    "originalUrl": "https://github.com/icloud-photos-downloader/icloud_photos_downloader",
+    "metadata": {
+      "score": 419,
+      "comments": 186,
+      "author": "reconnecting",
+      "time": 1768159438
+    },
+    "timestamp": 1768207235071
+  },
+  {
+    "id": "HN-46539478",
+    "title": "I'm making a game engine based on dynamic signed distance fields (SDFs) [video]",
+    "type": "TECH_NEWS",
+    "tags": [
+      "HackerNews",
+      "Tech Discussion"
+    ],
+    "importance": 6,
+    "summary": "I'm making a game engine based on dynamic signed distance fields (SDFs) [video]",
+    "meaning": "I'm making a game engine based on dynamic signed distance fields (SDFs) [video] 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "HackerNews",
+    "fullContent": "I'm making a game engine based on dynamic signed distance fields (SDFs) [video]",
+    "originalUrl": "https://www.youtube.com/watch?v=il-TXbn5iMA",
+    "metadata": {
+      "score": 294,
+      "comments": 36,
+      "author": "imagiro",
+      "time": 1767868445
+    },
+    "timestamp": 1768207235071
+  },
+  {
+    "id": "HN-46580864",
+    "title": "This game is a single 13 KiB file that runs on Windows, Linux and in the Browser",
+    "type": "TECH_NEWS",
+    "tags": [
+      "HackerNews",
+      "Tech Discussion"
+    ],
+    "importance": 6,
+    "summary": "This game is a single 13 KiB file that runs on Windows, Linux and in the Browser",
+    "meaning": "This game is a single 13 KiB file that runs on Windows, Linux and in the Browser 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "HackerNews",
+    "fullContent": "This game is a single 13 KiB file that runs on Windows, Linux and in the Browser",
+    "originalUrl": "https://iczelia.net/posts/snake-polyglot/",
+    "metadata": {
+      "score": 176,
+      "comments": 50,
+      "author": "snoofydude",
+      "time": 1768169675
+    },
+    "timestamp": 1768207235071
+  },
+  {
+    "id": "HN-46584173",
+    "title": "Xfce is great",
+    "type": "TECH_NEWS",
+    "tags": [
+      "HackerNews",
+      "Tech Discussion"
+    ],
+    "importance": 6,
+    "summary": "Xfce is great",
+    "meaning": "Xfce is great 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "HackerNews",
+    "fullContent": "Xfce is great",
+    "originalUrl": "https://rubenerd.com/xfce-is-great/",
+    "metadata": {
+      "score": 164,
+      "comments": 109,
+      "author": "mikece",
+      "time": 1768192766
+    },
+    "timestamp": 1768207235071
+  },
+  {
+    "id": "HN-46579374",
+    "title": "Sampling at negative temperature",
+    "type": "TECH_NEWS",
+    "tags": [
+      "HackerNews",
+      "Tech Discussion"
+    ],
+    "importance": 5,
+    "summary": "Sampling at negative temperature",
+    "meaning": "Sampling at negative temperature 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "HackerNews",
+    "fullContent": "Sampling at negative temperature",
+    "originalUrl": "https://cavendishlabs.org/blog/negative-temperature/",
+    "metadata": {
+      "score": 154,
+      "comments": 46,
+      "author": "ag8",
+      "time": 1768161674
+    },
+    "timestamp": 1768207235071
+  },
+  {
+    "id": "HN-46580136",
+    "title": "FUSE is All You Need – Giving agents access to anything via filesystems",
+    "type": "TECH_NEWS",
+    "tags": [
+      "HackerNews",
+      "Tech Discussion"
+    ],
+    "importance": 5,
+    "summary": "FUSE is All You Need – Giving agents access to anything via filesystems",
+    "meaning": "FUSE is All You Need – Giving agents access to anything via filesystems 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "HackerNews",
+    "fullContent": "FUSE is All You Need – Giving agents access to anything via filesystems",
+    "originalUrl": "https://jakobemmerling.de/posts/fuse-is-all-you-need/",
+    "metadata": {
+      "score": 118,
+      "comments": 49,
+      "author": "jakobem",
+      "time": 1768165965
+    },
+    "timestamp": 1768207235071
+  },
+  {
+    "id": "HN-46580703",
+    "title": "The next two years of software engineering",
+    "type": "TECH_NEWS",
+    "tags": [
+      "HackerNews",
+      "Tech Discussion"
+    ],
+    "importance": 5,
+    "summary": "The next two years of software engineering",
+    "meaning": "The next two years of software engineering 这是一个值得关注的技术信号。",
+    "communitySentiment": "社区反应积极",
+    "risk": "MEDIUM",
+    "source": "HackerNews",
+    "fullContent": "The next two years of software engineering",
+    "originalUrl": "https://addyosmani.com/blog/next-two-years/",
+    "metadata": {
+      "score": 116,
+      "comments": 71,
+      "author": "napolux",
+      "time": 1768168824
+    },
+    "timestamp": 1768207235071
+  }
+]

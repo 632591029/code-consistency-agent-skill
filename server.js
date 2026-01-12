@@ -85,7 +85,6 @@ async function performGeminiScan(preferences = "AI Productivity, Web3 Infrastruc
             model: 'gemini-2.5-flash',
             contents: prompt,
             config: {
-                tools: [{ googleSearch: {} }],
                 responseMimeType: "application/json",
                 responseSchema: {
                     type: Type.ARRAY,
@@ -111,6 +110,7 @@ async function performGeminiScan(preferences = "AI Productivity, Web3 Infrastruc
             },
         });
 
+        // 直接解析 JSON（responseMimeType 已设置为 application/json）
         const signals = JSON.parse(response.text);
         console.log(`[${new Date().toISOString()}] ✅ Gemini 扫描完成: ${signals.length} 条情报入库`);
         
