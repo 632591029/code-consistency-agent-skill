@@ -4,9 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ALPHA | AI 信号引擎</title>
+    <title>ALPHA | Web3 AI Signal Engine</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
@@ -14,14 +14,14 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: "#39FF14", // 亮绿色
-                        secondary: "#0F172A", // 深色底
-                        accent: "#1E293B", 
-                        surface: "#1E293B",
-                        muted: "#334155",
+                        primary: "#00F0FF", // Cyber Cyan
+                        secondary: "#8B5CF6", // Electric Violet
+                        accent: "#FF00E5", // Magenta
+                        background: "#020617",
+                        surface: "rgba(15, 23, 42, 0.6)",
                     },
                     fontFamily: {
-                        display: ["Noto Sans SC", "Inter", "sans-serif"],
+                        display: ["Outfit", "sans-serif"],
                         mono: ["JetBrains Mono", "monospace"]
                     }
                 }
@@ -31,18 +31,57 @@
     <style>
         body {
             background-color: #020617;
+            background-image: 
+                linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
             color: #F8FAFC;
-            font-family: 'Noto Sans SC', sans-serif;
-            -webkit-font-smoothing: antialiased;
+            font-family: 'Outfit', sans-serif;
+            overflow: hidden;
         }
-        .glass {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+        .web3-card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 240, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .fill-1 { font-variation-settings: 'FILL' 1; }
+        .web3-card:hover {
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+        }
+        .neon-text {
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+        .glow-button {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(90deg, #00F0FF, #8B5CF6);
+            color: #020617;
+        }
+        .glow-button::after {
+            content: '';
+            position: absolute;
+            top: -50%; left: -50%; width: 200%; height: 200%;
+            background: rgba(255,255,255,0.2);
+            transform: rotate(45deg);
+            transition: 0.5s;
+        }
+        .glow-button:hover::after {
+            left: 120%;
+        }
+        .scanline {
+            width: 100%; height: 2px;
+            background: rgba(0, 240, 255, 0.1);
+            position: absolute;
+            animation: scan 4s linear infinite;
+            z-index: 10;
+        }
+        @keyframes scan {
+            from { top: 0; }
+            to { top: 100%; }
+        }
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 <script type="importmap">
 {
@@ -50,12 +89,14 @@
     "react": "https://esm.sh/react@^19.2.3",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
     "react/": "https://esm.sh/react@^19.2.3/",
-    "@google/genai": "https://esm.sh/@google/genai@^1.35.0"
+    "@google/genai": "https://esm.sh/@google/genai@^1.35.0",
+    "express": "https://esm.sh/express@^5.2.1",
+    "cors": "https://esm.sh/cors@^2.8.5"
   }
 }
 </script>
 </head>
-<body class="bg-[#020617] text-slate-100 h-full">
+<body class="h-screen w-screen selection:bg-primary selection:text-black">
     <div id="root" class="h-full"></div>
 </body>
 </html>

@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { SignalType, RiskLevel, Signal, AppState } from './types';
-import { ICONS, SYSTEM_VERSION } from './constants';
 import Dashboard from './components/Dashboard';
 import SignalTerminal from './components/SignalTerminal';
 import FinanceTerminal from './components/FinanceTerminal';
@@ -10,8 +9,6 @@ import AIAssistant from './components/AIAssistant';
 import DetailModal from './components/DetailModal';
 import { signalEngine } from './services/signalEngine';
 
-const CACHE_KEY = 'alpha_signals_cache';
-
 const App: React.FC = () => {
   const [state, setState] = useState<AppState>({
     signals: [],
@@ -19,219 +16,178 @@ const App: React.FC = () => {
     activeView: 'dashboard',
     detailSignal: null,
     monitoredSources: {
-      twitters: ["SamA", "karpathy", "vitalik.eth", "guillermorauch", "miskohevery", "rowancheung", "paultoo", "levelsio", "tobi"],
-      websites: ["GitHub Trends", "Reddit AI", "Product Hunt", "HuggingFace", "TechCrunch", "The Verge"]
+      twitters: ["SamA", "karpathy", "vitalik.eth", "guillermorauch"],
+      websites: ["GitHub Trends", "HuggingFace"]
     }
   });
-  
-  const getPreferences = () => {
-    const liked = state.signals.filter(s => s.liked).map(s => s.title).join(', ');
-    return liked ? `用户明确感兴趣的主题：${liked}` : "";
+
+  const [sysStatus, setSysStatus] = useState({
+    lastSync: "NEVER",
+    logs: ["[SYS] 协议层已就绪", "[SYS] 节点自检完成: OK"]
+  });
+
+  const addLog = (msg: string) => {
+    setSysStatus(prev => ({
+      ...prev,
+      logs: [...prev.logs.slice(-5), `[${new Date().toLocaleTimeString()}] ${msg}`]
+    }));
   };
 
-  const loadFromCache = useCallback(() => {
-    const cached = localStorage.getItem(CACHE_KEY);
-    if (cached) {
-      try {
-        const parsed = JSON.parse(cached);
-        if (parsed && parsed.length > 0) {
-          const storedLikes = JSON.parse(localStorage.getItem('alpha_likes') || '[]');
-          const enrichedData = parsed.map((s: any) => ({
-            ...s,
-            liked: storedLikes.includes(s.id)
-          }));
-          setState(prev => ({ ...prev, signals: enrichedData }));
-          return true;
-        }
-      } catch (e) {
-        console.error("缓存解析错误", e);
-      }
-    }
-    return false;
-  }, []);
-
-  const fetchSignals = useCallback(async () => {
+  const syncWithCloud = useCallback(async () => {
+    if (state.loading) return;
     setState(prev => ({ ...prev, loading: true }));
+    addLog("执行深度扫描指令...");
+    
     try {
-      const prefs = getPreferences();
-      const data = await signalEngine.generateDailySignals(state.monitoredSources, prefs);
-      
-      const storedLikes = JSON.parse(localStorage.getItem('alpha_likes') || '[]');
-      const enrichedData = data.map(s => ({
-        ...s,
-        liked: storedLikes.includes(s.id)
-      }));
-      
-      localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-      setState(prev => ({ ...prev, signals: enrichedData, loading: false }));
+      const data = await signalEngine.generateDailySignals(state.monitoredSources);
+      localStorage.setItem('alpha_cloud_cache', JSON.stringify(data));
+      setState(prev => ({ ...prev, signals: data, loading: false }));
+      setSysStatus(p => ({ ...p, lastSync: new Date().toLocaleTimeString() }));
+      addLog(`任务完成: ${data.length} 条情报入库`);
     } catch (e) {
-      console.error("获取失败:", e);
+      addLog("探测器故障: 请检查 API 链路");
       setState(prev => ({ ...prev, loading: false }));
     }
-  }, [state.monitoredSources]);
-
-  const toggleLike = (id: string) => {
-    setState(prev => {
-      const newSignals = prev.signals.map(s => s.id === id ? { ...s, liked: !s.liked } : s);
-      const likedIds = newSignals.filter(s => s.liked).map(s => s.id);
-      localStorage.setItem('alpha_likes', JSON.stringify(likedIds));
-      return { ...prev, signals: newSignals };
-    });
-  };
+  }, [state.monitoredSources, state.loading]);
 
   useEffect(() => {
-    loadFromCache();
-  }, [loadFromCache]);
+    const cached = localStorage.getItem('alpha_cloud_cache');
+    if (cached) {
+      const data = JSON.parse(cached);
+      setState(prev => ({ ...prev, signals: data }));
+      addLog("从本地存储加载了历史快照");
+    } else {
+      addLog("系统待命。请手动点击启动。");
+    }
+  }, []);
 
   const renderContent = () => {
-    // 优先级 1: 加载中状态
     if (state.loading) {
       return (
-        <div className="flex-1 flex flex-col items-center justify-center p-10">
-          <div className="relative size-24 mb-6">
-              <div className="absolute inset-0 border-4 border-primary/10 rounded-full"></div>
-              <div className="absolute inset-0 border-t-4 border-primary rounded-full animate-spin"></div>
+        <div className="flex-1 flex flex-col items-center justify-center h-full space-y-6">
+          <div className="relative size-32">
+             <div className="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+             <div className="absolute inset-0 border-t-4 border-primary rounded-full animate-spin"></div>
+             <div className="absolute inset-0 flex items-center justify-center font-mono text-[10px] text-primary">SCANNING</div>
           </div>
           <div className="text-center">
-            <h3 className="text-primary font-bold text-lg mb-1">正在生成深度信号...</h3>
-            <p className="text-slate-500 text-sm">正在实时分析 X 和 GitHub 的硬核内容</p>
+            <h3 className="text-primary font-bold tracking-[0.4em] mb-2 uppercase animate-pulse">Alpha Synthesis Active</h3>
+            <p className="text-slate-500 text-[10px] font-mono">GOOGLE_SEARCH_GROUNDING_INITIATED...</p>
           </div>
         </div>
       );
     }
 
-    // 优先级 2: 设置页面（即使没有数据也应该能进）
-    if (state.activeView === 'settings') {
-      return <Settings signals={state.signals} monitoredSources={state.monitoredSources} setMonitoredSources={s => setState(p => ({...p, monitoredSources: s}))} />;
-    }
+    if (state.activeView === 'settings') return <Settings signals={state.signals} monitoredSources={state.monitoredSources} setMonitoredSources={s => setState(p => ({...p, monitoredSources: s}))} />;
+    if (state.activeView === 'chat') return <AIAssistant selectedSignal={state.signals.find(s => s.id === state.selectedSignalId)} onClose={() => setState(p => ({...p, activeView: 'dashboard'}))} />;
 
-    // 优先级 3: AI 聊天
-    if (state.activeView === 'chat') {
-      return <AIAssistant selectedSignal={state.signals.find(s => s.id === state.selectedSignalId)} onClose={() => setState(p => ({...p, activeView: 'dashboard', selectedSignalId: undefined}))} />;
-    }
-
-    // 优先级 4: 检查数据是否存在
-    if (state.signals.length === 0) {
-      return (
-        <div className="flex-1 flex flex-col items-center justify-center p-10 max-w-md mx-auto text-center">
-          <div className="size-20 bg-slate-800 rounded-3xl flex items-center justify-center mb-6 text-slate-500">
-             <span className="material-symbols-outlined text-4xl">cloud_off</span>
-          </div>
-          <h3 className="text-xl font-bold mb-2 text-white">本地无缓存数据</h3>
-          <p className="text-slate-400 text-sm mb-8">ALPHA 尚未执行今日扫描。数据只在您主动点击刷新时通过 AI 生成，以节省 Token。</p>
-          <button 
-            onClick={fetchSignals}
-            className="w-full h-14 bg-primary text-slate-900 font-black rounded-2xl hover:scale-105 transition-all shadow-lg shadow-primary/20"
-          >
-            立即启动全网扫描
-          </button>
-        </div>
-      );
-    }
-
-    // 优先级 5: 常规业务页面
     switch (state.activeView) {
-      case 'dashboard': return <Dashboard signals={state.signals} onNavigate={v => setState(p => ({...p, activeView: v}))} monitoredSources={state.monitoredSources} />;
-      case 'signal': return <SignalTerminal signals={state.signals.filter(s => s.type !== SignalType.FINANCE)} onSelect={s => setState(p => ({...p, detailSignal: s}))} onRefresh={fetchSignals} onToggleLike={toggleLike} />;
-      case 'finance': return <FinanceTerminal signals={state.signals.filter(s => s.type === SignalType.FINANCE)} onSelect={s => setState(p => ({...p, detailSignal: s}))} onRefresh={fetchSignals} />;
+      case 'dashboard': return <Dashboard signals={state.signals} onNavigate={v => setState(p => ({...p, activeView: v}))} onRefresh={syncWithCloud} />;
+      case 'signal': return <SignalTerminal signals={state.signals} onSelect={s => setState(p => ({...p, detailSignal: s}))} onRefresh={syncWithCloud} onToggleLike={() => {}} />;
+      case 'finance': return <FinanceTerminal signals={state.signals.filter(s => s.type === SignalType.FINANCE)} onSelect={s => setState(p => ({...p, detailSignal: s}))} onRefresh={syncWithCloud} />;
       default: return null;
     }
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#020617] overflow-hidden relative font-display text-slate-100">
-      {/* 侧边栏 - 桌面端 */}
-      <aside className="hidden lg:flex w-64 border-r border-slate-800 flex-col p-6 bg-[#0B0F1A]">
-        <div className="mb-10 flex items-center gap-3">
-          <div className="size-10 bg-primary/10 rounded-xl flex items-center justify-center border border-primary/20 text-primary">
-            <span className="material-symbols-outlined font-bold">hub</span>
-          </div>
-          <div>
-            <h1 className="text-xl font-black tracking-tighter text-white">ALPHA</h1>
-            <p className="text-[10px] text-slate-500 font-mono uppercase tracking-widest">{SYSTEM_VERSION}</p>
-          </div>
+    <div className="flex h-screen w-full bg-[#020617] text-slate-100 font-display">
+      <div className="scanline"></div>
+      
+      {/* 侧边栏 */}
+      <aside className="hidden lg:flex w-72 border-r border-white/5 flex-col p-8 bg-[#0B0F1A]/50 backdrop-blur-3xl z-50">
+        <div className="mb-12">
+            <div className="flex items-center gap-3">
+                <div className="size-10 bg-primary/20 border border-primary/40 rounded-lg flex items-center justify-center">
+                   <span className="material-symbols-outlined text-primary font-black">token</span>
+                </div>
+                <div>
+                   <h1 className="text-2xl font-black tracking-tighter italic neon-text">ALPHA</h1>
+                   <div className="text-[8px] font-mono text-primary/60 uppercase tracking-widest">Signal Hub v4.0.8</div>
+                </div>
+            </div>
         </div>
-        <nav className="flex-1 space-y-1">
+        
+        <nav className="flex-1 space-y-3">
           {[
-            { id: 'dashboard', icon: 'grid_view', label: '控制台' },
-            { id: 'signal', icon: 'sensors', label: '情报终端' },
-            { id: 'finance', icon: 'show_chart', label: '财富信号' },
-            { id: 'chat', icon: 'psychology', label: 'AI 分析' },
+            { id: 'dashboard', icon: 'dashboard_customize', label: '控制塔' },
+            { id: 'signal', icon: 'stream', label: '情报流' },
+            { id: 'finance', icon: 'currency_exchange', label: '资产探测' },
+            { id: 'chat', icon: 'smart_toy', label: 'AI 分析' },
           ].map(item => (
             <button 
               key={item.id}
               onClick={() => setState(p => ({...p, activeView: item.id as any}))} 
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${state.activeView === item.id ? 'bg-primary/10 text-primary font-bold' : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100'}`}
+              className={`w-full flex items-center gap-4 px-5 py-4 rounded-xl transition-all duration-300 group ${state.activeView === item.id ? 'bg-primary text-black font-bold shadow-[0_0_15px_rgba(0,240,255,0.4)]' : 'text-slate-500 hover:text-primary hover:bg-primary/5'}`}
             >
-              <span className={`material-symbols-outlined text-xl ${state.activeView === item.id ? 'fill-1' : ''}`}>{item.icon}</span>
-              <span className="text-sm">{item.label}</span>
+              <span className={`material-symbols-outlined text-xl ${state.activeView === item.id ? '' : 'group-hover:scale-110 transition-transform'}`}>{item.icon}</span>
+              <span className="text-xs font-bold tracking-wider uppercase">{item.label}</span>
             </button>
           ))}
         </nav>
-        <button 
-          onClick={() => setState(p => ({...p, activeView: 'settings'}))} 
-          className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all mt-auto ${state.activeView === 'settings' ? 'bg-primary/10 text-primary font-bold' : 'text-slate-500 hover:text-slate-300'}`}
-        >
-          <span className="material-symbols-outlined text-xl">settings</span>
-          <span className="text-sm">节点配置</span>
-        </button>
+
+        <div className="mt-auto space-y-6 pt-6 border-t border-white/5">
+            <div className="p-4 rounded-xl bg-black/40 border border-white/5">
+                <div className="flex justify-between items-center mb-3">
+                   <span className="text-[9px] font-bold text-slate-500 uppercase">系统实时日志</span>
+                   <div className="size-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_5px_#22c55e]"></div>
+                </div>
+                <div className="space-y-1.5 font-mono text-[9px]">
+                    {sysStatus.logs.map((log, i) => (
+                        <div key={i} className="text-slate-400 truncate opacity-80">{log}</div>
+                    ))}
+                </div>
+            </div>
+            
+            <button onClick={() => setState(p => ({...p, activeView: 'settings'}))} className="w-full flex items-center justify-between text-slate-500 hover:text-white transition-colors">
+               <span className="text-[10px] font-bold uppercase tracking-widest">Settings</span>
+               <span className="material-symbols-outlined text-sm">settings_input_component</span>
+            </button>
+        </div>
       </aside>
 
-      <div className="flex-1 flex flex-col min-w-0 relative">
-        <header className="h-16 flex items-center justify-between px-6 lg:px-8 border-b border-slate-800 bg-[#020617]/80 backdrop-blur-md shrink-0 z-10">
-          <div className="flex items-center gap-4">
-             <div className="lg:hidden size-9 bg-primary/10 rounded-lg flex items-center justify-center border border-primary/20">
-                <span className="material-symbols-outlined text-primary">hub</span>
-             </div>
-             <div className="flex flex-col">
-                <span className="text-[10px] text-slate-500 font-bold uppercase">ALPHA 信号引擎</span>
-                <div className="flex items-center gap-1.5">
-                   <div className="size-1.5 rounded-full bg-primary animate-pulse"></div>
-                   <span className="text-[10px] font-mono text-primary/80">引擎待命</span>
-                </div>
-             </div>
-          </div>
-          <div className="flex items-center gap-3">
-             {state.signals.length > 0 && (
-                <button 
-                  onClick={fetchSignals} 
-                  className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-[10px] hover:bg-slate-700 transition-all border border-slate-700"
-                >
-                  <span className="material-symbols-outlined text-xs">refresh</span>
-                  手动刷新数据
-                </button>
-             )}
-             <div className="text-[10px] font-mono text-slate-600 bg-slate-800/50 px-3 py-1 rounded-full uppercase">V4.2 Stealth</div>
-          </div>
+      {/* 主工作区 */}
+      <main className="flex-1 flex flex-col relative overflow-hidden">
+        <header className="h-20 border-b border-white/5 flex items-center justify-between px-10 bg-[#020617]/80 backdrop-blur-xl z-40">
+           <div className="flex items-center gap-10">
+              <div className="flex flex-col">
+                 <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Node Status</span>
+                 <span className="text-xs font-bold text-primary flex items-center gap-2">
+                    <span className="size-1.5 bg-primary rounded-full"></span>
+                    ACTIVE_MAINNET_01
+                 </span>
+              </div>
+              <div className="flex flex-col">
+                 <span className="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Sync Hash</span>
+                 <span className="text-[10px] font-mono text-slate-400">0x8F2C...E4B1</span>
+              </div>
+           </div>
+
+           <div className="flex items-center gap-6">
+              <div className="text-right hidden sm:block">
+                 <div className="text-[9px] text-slate-500 font-bold uppercase">Last Sync</div>
+                 <div className="text-xs font-mono text-slate-200">{sysStatus.lastSync}</div>
+              </div>
+              <button 
+                onClick={syncWithCloud}
+                className="h-10 px-6 glow-button rounded-lg text-xs font-black uppercase tracking-widest flex items-center gap-2"
+              >
+                 <span className="material-symbols-outlined text-sm">rocket_launch</span>
+                 <span>强制扫描</span>
+              </button>
+           </div>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-4 lg:p-8 no-scrollbar bg-[#020617]">
-          {renderContent()}
-        </main>
-        
-        {/* 移动端导航 */}
-        <nav className="lg:hidden flex border-t border-slate-800 bg-[#0B0F1A] px-2 py-2 shrink-0 pb-safe">
-           {[
-            { id: 'dashboard', icon: 'grid_view', label: '控制台' },
-            { id: 'signal', icon: 'sensors', label: '终端' },
-            { id: 'finance', icon: 'show_chart', label: '财富' },
-            { id: 'chat', icon: 'psychology', label: '分析' },
-            { id: 'settings', icon: 'settings', label: '设置' }
-           ].map(item => (
-             <button key={item.id} onClick={() => setState(p => ({...p, activeView: item.id as any}))} className={`flex-1 flex flex-col items-center py-2 transition-colors ${state.activeView === item.id ? 'text-primary' : 'text-slate-500'}`}>
-                <span className={`material-symbols-outlined text-2xl ${state.activeView === item.id ? 'fill-1' : ''}`}>{item.icon}</span>
-                <span className="text-[10px] mt-1">{item.label}</span>
-             </button>
-           ))}
-        </nav>
-      </div>
+        <div className="flex-1 overflow-y-auto no-scrollbar p-10 bg-gradient-to-br from-background via-background to-secondary/5">
+           {renderContent()}
+        </div>
+      </main>
 
       {state.detailSignal && (
         <DetailModal 
             signal={state.detailSignal} 
             onClose={() => setState(p => ({...p, detailSignal: null}))}
             onAskAI={() => setState(p => ({...p, selectedSignalId: state.detailSignal?.id, activeView: 'chat', detailSignal: null}))}
-            onToggleLike={toggleLike}
+            onToggleLike={() => {}}
         />
       )}
     </div>
