@@ -1,4 +1,4 @@
-# Subagent - AI团队代码和工程一致性保障系统
+# Code Consistency Agent Skill - AI团队代码和工程一致性保障系统
 
 ## 项目概述
 
