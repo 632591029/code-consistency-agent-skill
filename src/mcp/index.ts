@@ -229,6 +229,22 @@ export function createMCPClient(config: MCPConfig): MCPClient {
  * 预定义的MCP配置示例
  */
 export const predefinedMCPConfigs: Record<string, MCPConfig> = {
+  'github': {
+    name: 'github',
+    url: 'https://api.github.com',
+    protocol: 'http',
+    authentication: {
+      type: 'bearer',
+      // Token需要在运行时设置
+    },
+    endpoints: {
+      'create-repo': '/user/repos',
+      'get-repo': '/repos/{owner}/{repo}',
+      'list-repos': '/user/repos',
+      'create-file': '/repos/{owner}/{repo}/contents/{path}',
+      'update-file': '/repos/{owner}/{repo}/contents/{path}',
+    },
+  },
   'rube': {
     name: 'rube',
     url: 'https://rube.app/api',
