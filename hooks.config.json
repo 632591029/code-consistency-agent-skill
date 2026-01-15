@@ -1,0 +1,31 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '执行bash前的检查'"
+          }
+        ]
+      }
+    ],
+    "PostRepositoryCreate": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npm audit"
+          },
+          {
+            "type": "command",
+            "command": "npm outdated"
+          }
+        ]
+      }
+    ]
+  }
+}
+
