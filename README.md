@@ -138,10 +138,44 @@ for (const result of results) {
 封装外部接口调用，支持MCP协议、HTTP和WebSocket。
 
 **参考资源：**
+- [GitHub MCP Server](https://github.com/github/github-mcp-server) - GitHub官方MCP服务器
 - [mcp.so](https://mcp.so)
 - [rube.app](https://rube.app/)
 
-**使用示例：**
+**GitHub MCP使用示例：**
+
+```typescript
+import { createGitHubMCPClient } from './mcp/github';
+
+// 使用GitHub Personal Access Token创建客户端
+const client = createGitHubMCPClient('your_github_token');
+
+// 验证仓库访问
+const hasAccess = await client.verifyAccess('owner', 'repo');
+
+// 创建或更新文件
+await client.createOrUpdateFile('owner', 'repo', {
+  path: 'README.md',
+  content: '# My Project',
+  message: 'Update README',
+});
+```
+
+**使用GitHub MCP推送代码：**
+
+```bash
+# 方法1: 使用npm脚本
+npm run push:mcp <GITHUB_TOKEN>
+
+# 方法2: 直接运行
+tsx push-with-mcp.ts <GITHUB_TOKEN>
+
+# 方法3: 使用环境变量
+export GITHUB_TOKEN=your_token
+npm run push:mcp
+```
+
+**其他MCP使用示例：**
 
 ```typescript
 import { createMCPClient, predefinedMCPConfigs } from './mcp';
