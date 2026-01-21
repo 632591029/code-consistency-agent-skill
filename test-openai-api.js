@@ -1,6 +1,6 @@
 import OpenAI from 'openai';
 
-const OPENAI_API_KEY = "your_openai_api_key_here";
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "your_openai_api_key_here";
 
 async function testOpenAI() {
   console.log('测试 OpenAI API Key...\n');

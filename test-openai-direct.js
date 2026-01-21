@@ -1,4 +1,4 @@
-const OPENAI_API_KEY = "your_openai_api_key_here";
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "your_openai_api_key_here";
 
 async function testOpenAIDirect() {
   console.log('直接测试 OpenAI API...\n');
