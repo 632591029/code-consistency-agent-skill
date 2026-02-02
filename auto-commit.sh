@@ -2,7 +2,7 @@
 
 # 自动提交脚本 - 用于维护项目活动日志并推送到 GitHub
 # 用途: 定期更新 ACTIVITY_LOG.md 并提交,保持项目活跃度
-# 特性: 工作日提交策略、智能错误处理、详细日志输出
+# 特性: 工作日提交策略、智能错误处理、详细日志输出、多次提交以加深贡献图颜色
 
 set -e
 
@@ -44,16 +44,26 @@ git pull origin master --rebase 2>/dev/null || {
   echo "⚠️  拉取代码失败或无远程更新,继续执行..."
 }
 
-# 更新 ACTIVITY_LOG.md
-echo "📝 更新活动日志..."
-cat > ACTIVITY_LOG.md << EOF
+# 设置提交次数(10-15次随机,确保深绿色)
+COMMIT_COUNT=$((10 + RANDOM % 6))
+echo "🎯 目标提交次数: ${COMMIT_COUNT} (确保深绿色)"
 
-## 活动记录 - ${TIMESTAMP}
+# 执行多次提交
+for i in $(seq 1 ${COMMIT_COUNT}); do
+  # 获取当前时间戳
+  CURRENT_TIMESTAMP=$(date +"%Y-%m-%d %H:%M:%S")
+  
+  # 更新 ACTIVITY_LOG.md
+  echo "📝 更新活动日志 (${i}/${COMMIT_COUNT})..."
+  cat > ACTIVITY_LOG.md << EOF
+
+## 活动记录 - ${CURRENT_TIMESTAMP}
 
 - **日期**: ${CURRENT_DATE}
-- **时间**: ${CURRENT_TIME}
-- **活动**: 自动更新项目活动日志
+- **时间**: $(date +"%H:%M:%S")
+- **活动**: 自动更新项目活动日志 (提交 ${i}/${COMMIT_COUNT})
 - **状态**: ✅ 成功
+- **提交序号**: ${i}
 
 # 项目活动日志
 
@@ -61,35 +71,32 @@ cat > ACTIVITY_LOG.md << EOF
 
 ---
 
+<!-- Commit ${i} at ${CURRENT_TIMESTAMP} -->
+
 EOF
 
-# 检查是否有变更
-if git diff --quiet ACTIVITY_LOG.md; then
-  echo "ℹ️  没有检测到变更,尝试添加时间戳..."
-  echo "<!-- Updated at ${TIMESTAMP} -->" >> ACTIVITY_LOG.md
-fi
+  # 添加文件到暂存区
+  git add ACTIVITY_LOG.md
+  
+  # 提交变更
+  COMMIT_MESSAGE="chore: 自动更新活动日志 - ${CURRENT_DATE} #${i}"
+  echo "💾 提交变更 (${i}/${COMMIT_COUNT}): ${COMMIT_MESSAGE}"
+  git commit -m "${COMMIT_MESSAGE}" --quiet
+  
+  if [ $? -ne 0 ]; then
+    echo "❌ 提交 ${i} 失败"
+    exit 1
+  fi
+  
+  echo "✅ 提交 ${i} 成功"
+  
+  # 短暂延迟,模拟真实提交行为
+  sleep 1
+done
 
-# 添加文件到暂存区
-echo "➕ 添加文件到暂存区..."
-git add ACTIVITY_LOG.md
-
-# 检查是否有需要提交的内容
-if git diff --cached --quiet; then
-  echo "ℹ️  没有需要提交的内容"
-  exit 0
-fi
-
-# 提交变更
-COMMIT_MESSAGE="chore: 自动更新活动日志 - ${CURRENT_DATE}"
-echo "💾 提交变更: ${COMMIT_MESSAGE}"
-git commit -m "${COMMIT_MESSAGE}"
-
-if [ $? -ne 0 ]; then
-  echo "❌ 提交失败"
-  exit 1
-fi
-
-echo "✅ 提交成功"
+echo "=========================================="
+echo "📊 提交统计: 共完成 ${COMMIT_COUNT} 次提交"
+echo "=========================================="
 
 # 推送到远程仓库
 echo "🚀 推送到 GitHub..."
@@ -109,6 +116,7 @@ fi
 
 echo "=========================================="
 echo "✅ 自动提交任务完成"
-echo "📊 提交信息: ${COMMIT_MESSAGE}"
+echo "📊 总提交次数: ${COMMIT_COUNT}"
+echo "🎨 预期效果: 深绿色"
 echo "🔗 仓库: 632591029/code-consistency-agent-skill"
 echo "=========================================="
